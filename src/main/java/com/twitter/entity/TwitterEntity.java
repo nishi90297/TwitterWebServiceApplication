@@ -36,7 +36,8 @@ public class TwitterEntity {
 	private List<TwitterEntity> following;
 	
 	@OneToMany(cascade = CascadeType.ALL,fetch=FetchType.EAGER)
-	@JoinTable(name="UserTweets",joinColumns=@JoinColumn(name="UserId"),inverseJoinColumns=@JoinColumn(name="TweetId"))
+	@JoinTable(name="UserTweets",joinColumns=@JoinColumn(name="UserId",referencedColumnName="emailId"),
+		inverseJoinColumns=@JoinColumn(name="TweetId" ,referencedColumnName="tweetId",unique=true))
 	private List<TweetEntity> tweetsList;
 	
 	public String getEmailId() {
