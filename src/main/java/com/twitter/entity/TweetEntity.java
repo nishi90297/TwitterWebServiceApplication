@@ -13,33 +13,36 @@ public class TweetEntity {
 	@Id
 	@GeneratedValue
 	private Integer tweetId;
+	
 	@Column(name = "tweet",columnDefinition="VARCHAR(100)")
 	private String tweetedText;
+	
+	@Column(name = "likes",columnDefinition="int")
 	private int likes;
-	public TweetEntity() {
-		super();
-	}
-	public TweetEntity(String tweetedText) {
-		this.tweetedText = tweetedText;
-	}
+
 	public Integer getTweetId() {
 		return tweetId;
 	}
-	
+
 	public void setTweetId(Integer tweetId) {
 		this.tweetId = tweetId;
 	}
-	public int getLikes() {
-		return likes;
-	}
-	public void setLikes(int likes) {
-		this.likes = likes;
-	}
+
 	public String getTweetedText() {
 		return tweetedText;
 	}
-	public void setTweetedText(String tweet) {
-		this.tweetedText = tweet;
+
+	public void setTweetedText(String tweetedText) {
+		this.tweetedText = tweetedText;
 	}
+
+	public int getLikes() {
+		return likes;
+	}
+
+	public void setLikes(int likes) {
+		this.likes = likes;
+	}
+
 	
 }

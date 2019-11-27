@@ -4,18 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import com.twitter.entity.TweetEntity;
 import com.twitter.entity.TwitterEntity;
+import com.twitter.repository.TweetRepository;
 import com.twitter.repository.TwitterRepository;
 
 @Repository(value = "twitterDAO")
 public class TwitterDAOImpl implements TwitterDAO{
 
 	private TwitterEntity currentUser;
+	
 	@Autowired
 	private TwitterRepository twitterRepository;
+	
+	@Autowired
+	private TweetRepository tweetRepository;
 	
 	@Override
 	public String createUser(TwitterEntity twitterEntity) throws Exception {
@@ -53,11 +61,15 @@ public class TwitterDAOImpl implements TwitterDAO{
 		else if(!twitterRepository.findById(emailId).isPresent()) {
 			return "No such user with " + emailId +" exists";
 		}
-		else if(currentUser.getFollowers().contains(twitterRepository.findById(emailId)) ){
+		else if(currentUser.getFollowers().contains(twitterRepository.findById(emailId).get()) ){
 			return emailId +" already exists";
 		}
+		else if(currentUser.getEmailId().equals(emailId) ){
+			return "can't Follow Yourself";
+		}
 		else {
-			System.out.println(currentUser.getFollowers());
+			System.out.println("currentUser.getFollowers() "+ currentUser.getFollowers());
+			System.out.println("twitterRepository.findById(emailId) "+twitterRepository.findById(emailId).get());
 			if(currentUser.getFollowers().isEmpty()) {
 				List<TwitterEntity> followersList= new ArrayList<>();
 				followersList.add(twitterRepository.findById(emailId).get());
@@ -65,9 +77,9 @@ public class TwitterDAOImpl implements TwitterDAO{
 				twitterRepository.save(currentUser);
 				return emailId +" is set into your followers.";
 			}
-			currentUser.getFollowing().add(twitterRepository.findById(emailId).get());
+			currentUser.getFollowers().add(twitterRepository.findById(emailId).get());
 			twitterRepository.save(currentUser);
-			return "You are now following "+ emailId +" !";
+			return emailId +" is set into your followers.";
 		}
 	}
 	
@@ -86,13 +98,6 @@ public class TwitterDAOImpl implements TwitterDAO{
 	@Override
 	public int postTweet(String post) throws Exception{
 		
-		 else if (tweetedUser.isPresent()) {
-			tweetedUser.get().getTweetsList().add(new Tweet(tweetedText));
-			twitterRepo.save(tweetedUser.get());
-		} else
-			throw new DataNotFoundException("No user exists with the given id: " + currentUser);
-		List<Tweet> tweets = tweetedUser.get().getTweetsList();
-		return tweets.get(tweets.size() - 1);
 		if(currentUser!=null) {
 			TweetEntity tweetEntity= new TweetEntity();
 			tweetEntity.setTweetedText(post);
@@ -109,4 +114,14 @@ public class TwitterDAOImpl implements TwitterDAO{
 		}
 		return 0;
 	}
+	
+//	@Override
+//	public List<TweetEntity> getTweets() {
+//		List<TweetEntity> tweetList = new ArrayList<>();
+//		Page<TweetEntity> tweetPage = tweetRepository.findAll(pageable);
+//		if (tweetPage.hasContent()) {
+//			tweetList = tweetPage.getContent();
+//		}
+//		return tweetList;
+//	}
 }

@@ -80,7 +80,7 @@ public class TwitterAPI {
 				result="User No longer existed !";
 			}
 			else {
-				result="Post created with Id: "+ response;
+				result="Post created with Id: "+ response + "successfully !";
 			}
 			return new ResponseEntity<String>(result, HttpStatus.OK);
 		} 
