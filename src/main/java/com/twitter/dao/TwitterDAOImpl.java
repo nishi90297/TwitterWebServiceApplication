@@ -132,13 +132,23 @@ public class TwitterDAOImpl implements TwitterDAO{
 		}
 	}
 	
-//	@Override
-//	public List<TweetEntity> getTweets() {
+	@Override
+	public List<TweetEntity> getTweets() throws Exception {
+		
+		List<TweetEntity> top10List= new ArrayList<TweetEntity>();
+		List<TweetEntity> tweetList=tweetRepository.findAll();
+		
+		int noOfTweets=tweetList.size();
+		
+		for(int i=noOfTweets-1;i>=noOfTweets-11;i--){
+			top10List.add(tweetList.get(i));
+		}
+		return top10List;
 //		List<TweetEntity> tweetList = new ArrayList<>();
 //		Page<TweetEntity> tweetPage = tweetRepository.findAll(pageable);
 //		if (tweetPage.hasContent()) {
 //			tweetList = tweetPage.getContent();
 //		}
 //		return tweetList;
-//	}
+	}
 }

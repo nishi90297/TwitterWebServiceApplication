@@ -102,4 +102,16 @@ public class TwitterAPI {
 		}
 	}
 	
+	@RequestMapping(value = "home", method = RequestMethod.POST)
+	public ResponseEntity<String> likeTweet(@RequestParam int tweetId) throws Exception {
+		try {
+			String result=twitterService.likeTweet(tweetId); 
+			return new ResponseEntity<String>(result, HttpStatus.OK);
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>("failed", HttpStatus.BAD_REQUEST);
+		}
+	}
+	
 }

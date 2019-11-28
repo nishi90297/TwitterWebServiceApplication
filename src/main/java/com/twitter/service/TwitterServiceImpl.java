@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.twitter.dao.TwitterDAO;
+import com.twitter.entity.TweetEntity;
 import com.twitter.entity.TwitterEntity;
 
 
@@ -48,6 +49,11 @@ public class TwitterServiceImpl implements TwitterService,UserDetailsService {
 	@Override
 	public String likeTweet(int tweetId) throws Exception{
 		return twitterDAO.likeTweet(tweetId);
+	}
+	
+	@Override
+	public List<TweetEntity> getTweets() throws Exception{
+		return twitterDAO.getTweets();
 	}
 	
 	@Override
