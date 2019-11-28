@@ -36,21 +36,6 @@ public class TwitterDAOImpl implements TwitterDAO{
 	}
 	
 	@Override
-	public String loginUser(String emailId, String password) throws Exception{
-		
-		if(twitterRepository.findById(emailId).isPresent()) {
-			if(twitterRepository.findById(emailId).get().getPassword().equals(password)) {
-				currentUser=twitterRepository.findById(emailId).get();
-				return "User Successfully Login !";
-			}
-			return "Password Incorrect";
-		}
-		else {
-			return "Email Id Not present";
-		}
-	}
-	
-	@Override
 	public String followUser(String emailId) throws Exception{
 		
 		
@@ -63,6 +48,13 @@ public class TwitterDAOImpl implements TwitterDAO{
 		else if(currentUser.getFollowers().contains(twitterRepository.findById(emailId).get()) ){
 			return emailId +" already exists";
 		}
+//		else if(currentUser.getFollowers().stream().filter(follower->
+//		{
+//			follower.getEmailId().equals(twitterRepository.findById(emailId).get().getEmailId());
+//			
+//		})){
+//			return emailId +" already exists";
+//		}
 		else if(currentUser.getEmailId().equals(emailId) ){
 			return "can't Follow Yourself";
 		}
@@ -144,8 +136,8 @@ public class TwitterDAOImpl implements TwitterDAO{
 			top10List.add(tweetList.get(i));
 		}
 		return top10List;
-//		List<TweetEntity> tweetList = new ArrayList<>();
-//		Page<TweetEntity> tweetPage = tweetRepository.findAll(pageable);
+//		List<TweetENtitr> tweetList = null;
+//		Page<Tweet> tweetPage = tweetRepo.findAll(new PageRequest(0, 10));
 //		if (tweetPage.hasContent()) {
 //			tweetList = tweetPage.getContent();
 //		}

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.twitter.entity.TweetEntity;
 import com.twitter.entity.TwitterEntity;
 import com.twitter.service.TwitterServiceImpl;
 
@@ -30,19 +31,7 @@ public class TwitterAPI {
 		} 
 		catch (Exception e) {
 			e.printStackTrace();
-			return new ResponseEntity<String>("Failed ,Please try again !", HttpStatus.BAD_REQUEST);
-		}
-	}
-	
-	@RequestMapping(value = "login", method = RequestMethod.GET)
-	public ResponseEntity<String> loginUser(@RequestParam String emailId, String password) throws Exception {
-		try {
-			String response=twitterService.loginUser(emailId,password);
-			return new ResponseEntity<String>(response, HttpStatus.OK);
-		} 
-		catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<String>("failed !", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>("Some error Occured ,Please try again !", HttpStatus.BAD_REQUEST);
 		}
 	}
 	
@@ -102,15 +91,16 @@ public class TwitterAPI {
 		}
 	}
 	
-	@RequestMapping(value = "home", method = RequestMethod.POST)
-	public ResponseEntity<String> likeTweet(@RequestParam int tweetId) throws Exception {
+	@RequestMapping(value = "home", method = RequestMethod.GET)
+	public ResponseEntity<List<TweetEntity>> getTweets() throws Exception {
 		try {
-			String result=twitterService.likeTweet(tweetId); 
-			return new ResponseEntity<String>(result, HttpStatus.OK);
+			 List<TweetEntity> tweetsList=twitterService.getTweets(); 
+			return new ResponseEntity<List<TweetEntity>>(tweetsList, HttpStatus.OK);
 		} 
 		catch (Exception e) {
 			e.printStackTrace();
-			return new ResponseEntity<String>("failed", HttpStatus.BAD_REQUEST);
+			List<TweetEntity> tweetsList=new ArrayList<>();
+			return new ResponseEntity<List<TweetEntity>>(tweetsList, HttpStatus.BAD_REQUEST);
 		}
 	}
 	
