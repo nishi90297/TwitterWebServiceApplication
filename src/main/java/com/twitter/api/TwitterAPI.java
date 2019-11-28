@@ -77,11 +77,23 @@ public class TwitterAPI {
 			int response =twitterService.postTweet(post);
 			String result="";
 			if(response==0) {
-				result="User No longer existed !";
+				result="User not login !";
 			}
 			else {
 				result="Post created with Id: "+ response + "successfully !";
 			}
+			return new ResponseEntity<String>(result, HttpStatus.OK);
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>("failed", HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@RequestMapping(value = "likeTweet", method = RequestMethod.POST)
+	public ResponseEntity<String> likeTweet(@RequestParam int tweetId) throws Exception {
+		try {
+			String result=twitterService.likeTweet(tweetId); 
 			return new ResponseEntity<String>(result, HttpStatus.OK);
 		} 
 		catch (Exception e) {

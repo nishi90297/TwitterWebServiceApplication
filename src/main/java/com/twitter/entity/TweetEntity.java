@@ -6,13 +6,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Table(name="tweets")
+@GenericGenerator(name = "pkgen", strategy = "increment")
 public class TweetEntity {
 	
 	@Id
-	@GeneratedValue
-	private Integer tweetId;
+	@GeneratedValue(generator="pkgen")
+	private int tweetId;
 	
 	@Column(name = "tweet",columnDefinition="VARCHAR(100)")
 	private String tweetedText;
@@ -20,11 +23,11 @@ public class TweetEntity {
 	@Column(name = "likes",columnDefinition="int")
 	private int likes;
 
-	public Integer getTweetId() {
+	public int getTweetId() {
 		return tweetId;
 	}
 
-	public void setTweetId(Integer tweetId) {
+	public void setTweetId(int tweetId) {
 		this.tweetId = tweetId;
 	}
 

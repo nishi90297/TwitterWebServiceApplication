@@ -11,4 +11,5 @@ public interface TwitterDAO {
 	public String followUser(String emailId) throws Exception;
 	public List<TwitterEntity> followersList() throws Exception;
 	public int postTweet(String post) throws Exception;
+	public String likeTweet(int tweetId) throws Exception;
 }

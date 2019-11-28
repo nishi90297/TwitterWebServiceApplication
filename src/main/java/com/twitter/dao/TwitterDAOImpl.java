@@ -29,7 +29,6 @@ public class TwitterDAOImpl implements TwitterDAO{
 	public String createUser(TwitterEntity twitterEntity) throws Exception {
 		
 		if(!twitterRepository.findById(twitterEntity.getEmailId()).isPresent()) {
-			currentUser=null;
 			twitterRepository.save(twitterEntity);
 			return "User Successfully Created !";
 		}
@@ -56,7 +55,7 @@ public class TwitterDAOImpl implements TwitterDAO{
 		
 		
 		if(currentUser==null) {
-			return "User no longer exists ! ";
+			return "User not login !! ";
 		}
 		else if(!twitterRepository.findById(emailId).isPresent()) {
 			return "No such user with " + emailId +" exists";
@@ -97,22 +96,40 @@ public class TwitterDAOImpl implements TwitterDAO{
 	
 	@Override
 	public int postTweet(String post) throws Exception{
-		
 		if(currentUser!=null) {
 			TweetEntity tweetEntity= new TweetEntity();
 			tweetEntity.setTweetedText(post);
-			
+			tweetRepository.save(tweetEntity);
 			if(currentUser.getTweetsList().isEmpty()) {
 				List<TweetEntity> tweetsList= new ArrayList<>();
 				tweetsList.add(tweetEntity);
 				currentUser.setTweetsList(tweetsList);
 				twitterRepository.save(currentUser);
+				
+				return tweetEntity.getTweetId();
 			}
 			currentUser.getTweetsList().add(tweetEntity);
 			twitterRepository.save(currentUser);
 			return tweetEntity.getTweetId();
 		}
 		return 0;
+	}
+	
+	@Override
+	public String likeTweet(int tweetId) throws Exception{
+		if(currentUser==null) {
+			return "User not login !";
+		}
+		else if(!tweetRepository.findById(tweetId).isPresent()) {
+			return "Tweet Do not exists!";
+		}
+		else {
+			int likes=tweetRepository.findById(tweetId).get().getLikes();
+			likes+=1;
+			tweetRepository.findById(tweetId).get().setLikes(likes);
+			tweetRepository.save(tweetRepository.findById(tweetId).get());
+			return "You have successfully liked this post as "+ likes +"th user !";
+		}
 	}
 	
 //	@Override
