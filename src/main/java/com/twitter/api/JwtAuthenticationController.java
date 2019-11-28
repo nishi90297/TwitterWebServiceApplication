@@ -14,9 +14,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.twitter.config.JwtTokenUtil;
+import com.twitter.dao.TwitterDAOImpl;
 import com.twitter.entity.JwtRequest;
-import com.twitter.entity.JwtResponse;
-import com.twitter.service.TwitterServiceImpl;
+import com.twitter.entity.JwtResponse;;
+
 @RestController
 @CrossOrigin
 public class JwtAuthenticationController {
@@ -28,14 +29,14 @@ public class JwtAuthenticationController {
 	private JwtTokenUtil jwtTokenUtil;
 
 	@Autowired
-	private TwitterServiceImpl twitterService;
+	private TwitterDAOImpl twitterDAO;
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
 
 		authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 
-		final UserDetails userDetails = twitterService
+		final UserDetails userDetails = twitterDAO
 				.loadUserByUsername(authenticationRequest.getUsername());
 
 		final String token = jwtTokenUtil.generateToken(userDetails);

@@ -7,6 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import com.twitter.entity.TweetEntity;
@@ -15,7 +23,7 @@ import com.twitter.repository.TweetRepository;
 import com.twitter.repository.TwitterRepository;
 
 @Repository(value = "twitterDAO")
-public class TwitterDAOImpl implements TwitterDAO{
+public class TwitterDAOImpl implements TwitterDAO,UserDetailsService, PasswordEncoder {
 
 	private TwitterEntity currentUser;
 	
@@ -36,18 +44,30 @@ public class TwitterDAOImpl implements TwitterDAO{
 	}
 	
 	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		
+		if (twitterRepository.findById(username).get().getEmailId().equals(username)) {
+			
+			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12); 
+			String password=encoder.encode(twitterRepository.findById(username).get().getPassword());
+			currentUser=twitterRepository.findById(username).get();
+			return new User(twitterRepository.findById(username).get().getEmailId(),password,
+					new ArrayList<>());
+		} else {
+			throw new UsernameNotFoundException("User not found with username: " + username);
+		}
+	}
+	
+	
+	@Override
 	public String followUser(String emailId) throws Exception{
 		
-		
-		if(currentUser==null) {
-			return "User not login !! ";
+		if(!twitterRepository.findById(emailId).isPresent()) {
+			return "No such user with emailId: " + emailId +" exists";
 		}
-		else if(!twitterRepository.findById(emailId).isPresent()) {
-			return "No such user with " + emailId +" exists";
-		}
-		else if(currentUser.getFollowers().contains(twitterRepository.findById(emailId).get()) ){
-			return emailId +" already exists";
-		}
+//		else if(currentUser.getFollowers().contains(twitterRepository.findById(emailId).get()) ){
+//			return emailId +" already exists";
+//		}
 //		else if(currentUser.getFollowers().stream().filter(follower->
 //		{
 //			follower.getEmailId().equals(twitterRepository.findById(emailId).get().getEmailId());
@@ -59,8 +79,6 @@ public class TwitterDAOImpl implements TwitterDAO{
 			return "can't Follow Yourself";
 		}
 		else {
-			System.out.println("currentUser.getFollowers() "+ currentUser.getFollowers());
-			System.out.println("twitterRepository.findById(emailId) "+twitterRepository.findById(emailId).get());
 			if(currentUser.getFollowers().isEmpty()) {
 				List<TwitterEntity> followersList= new ArrayList<>();
 				followersList.add(twitterRepository.findById(emailId).get());
@@ -77,13 +95,8 @@ public class TwitterDAOImpl implements TwitterDAO{
 	@Override
 	public List<TwitterEntity> followersList() throws Exception{
 		
-		if(currentUser!=null) {
-			List<TwitterEntity> followersList=currentUser.getFollowers();
-			return followersList;
-		}
-		else {
-			return null ;
-		}
+		List<TwitterEntity> followersList=currentUser.getFollowers();
+		return followersList;
 	}
 	
 	@Override
@@ -127,20 +140,34 @@ public class TwitterDAOImpl implements TwitterDAO{
 	@Override
 	public List<TweetEntity> getTweets() throws Exception {
 		
-		List<TweetEntity> top10List= new ArrayList<TweetEntity>();
-		List<TweetEntity> tweetList=tweetRepository.findAll();
-		
-		int noOfTweets=tweetList.size();
-		
-		for(int i=noOfTweets-1;i>=noOfTweets-11;i--){
-			top10List.add(tweetList.get(i));
-		}
-		return top10List;
-//		List<TweetENtitr> tweetList = null;
-//		Page<Tweet> tweetPage = tweetRepo.findAll(new PageRequest(0, 10));
-//		if (tweetPage.hasContent()) {
-//			tweetList = tweetPage.getContent();
+//		List<TweetEntity> top10List= new ArrayList<TweetEntity>();
+//		List<TweetEntity> tweetList=tweetRepository.findAll();
+//		
+//		int noOfTweets=tweetList.size();
+//		
+//		for(int i=noOfTweets-1;i>=noOfTweets-11;i--){
+//			top10List.add(tweetList.get(i));
 //		}
-//		return tweetList;
+//		return top10List;
+		List<TweetEntity> tweetList = null;
+		int noOfTweets= tweetRepository.findAll().size();
+		Page<TweetEntity> tweetPage = tweetRepository.findAll(PageRequest.of(noOfTweets, 10,Direction.DESC));
+		if (tweetPage.hasContent()) {
+			tweetList = tweetPage.getContent();
+		}
+		return tweetList;
+	}
+	
+
+	@Override
+	public String encode(CharSequence rawPassword) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean matches(CharSequence rawPassword, String encodedPassword) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

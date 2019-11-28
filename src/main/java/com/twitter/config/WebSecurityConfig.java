@@ -14,7 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.twitter.service.TwitterServiceImpl;
+import com.twitter.dao.TwitterDAOImpl;
 
 @Configuration
 @EnableWebSecurity
@@ -25,7 +25,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
 	@Autowired
-	private TwitterServiceImpl twitterService;
+	private TwitterDAOImpl twitterDAO;
 
 	@Autowired
 	private JwtRequestFilter jwtRequestFilter;
@@ -35,7 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		// configure AuthenticationManager so that it knows from where to load
 		// user for matching credentials
 		// Use BCryptPasswordEncoder
-		auth.userDetailsService(twitterService).passwordEncoder(passwordEncoder());
+		auth.userDetailsService(twitterDAO).passwordEncoder(passwordEncoder());
 	}
 
 	@Bean

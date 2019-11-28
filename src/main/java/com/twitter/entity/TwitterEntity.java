@@ -25,12 +25,12 @@ public class TwitterEntity {
 	private String password;
 	private String gender;
 	
-	//whom you follow
+	//who following you
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name="tfollower",joinColumns=@JoinColumn(name="followingId"),inverseJoinColumns=@JoinColumn(name="followerId"))
 	private List<TwitterEntity> followers;
 	
-	//who following you
+	//whom you follow
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name="tfollower",joinColumns=@JoinColumn(name="followerId"),inverseJoinColumns=@JoinColumn(name="followingId"))
 	private List<TwitterEntity> following;
