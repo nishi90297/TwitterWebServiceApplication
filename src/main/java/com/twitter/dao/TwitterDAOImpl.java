@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -25,6 +24,7 @@ import com.twitter.repository.TwitterRepository;
 @Repository(value = "twitterDAO")
 public class TwitterDAOImpl implements TwitterDAO,UserDetailsService, PasswordEncoder {
 
+	@Autowired
 	private TwitterEntity currentUser;
 	
 	@Autowired

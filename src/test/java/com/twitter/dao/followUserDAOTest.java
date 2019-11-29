@@ -23,32 +23,19 @@ public class followUserDAOTest {
 		@Autowired
 		@Mock
 	    private TwitterRepository twitterRepository;
+		
+		@Mock
+		private TwitterEntity currentUser;
 			
 		@Autowired
 		@InjectMocks
 	    private TwitterDAOImpl twitterDAO;
 	 
 		public void init() {
-	    	TwitterEntity userEntity = new TwitterEntity();
-			userEntity.setEmailId("nishi@gmail.com");
-			userEntity.setUserName("Nishtha");
-			userEntity.setGender("female");
-			userEntity.setPassword("password");
-			TwitterEntity currentUser=userEntity;
+	    	
 			
 	    }
-//		@Test
-//		public void signUpSuccessfullTest() throws Exception {
-//			TwitterEntity twitterEntity = new TwitterEntity();
-//			twitterEntity.setEmailId("nishi@gmail.com");
-//			twitterEntity.setUserName("Nishtha");
-//			twitterEntity.setGender("female");
-//			twitterEntity.setPassword("password");
-//			
-//			when(twitterRepository.findById(twitterEntity.getEmailId())).thenReturn(Optional.ofNullable(null));
-//			assertEquals(twitterDAO.createUser(twitterEntity),"User Successfully Created !");
-//		}
-//		
+		
 		@Test
 		public void emailNotExistsInDatabaseTest() throws Exception {
 			TwitterEntity userEntity = new TwitterEntity();
