@@ -16,7 +16,7 @@ public class TwitterServiceImpl implements TwitterService{
 	@Autowired
 	private TwitterDAO twitterDAO;
 	
-	
+	 
 	@Override
 	public String createUser(TwitterEntity twitterEntity) throws Exception {
 		if(twitterEntity.getEmailId()!=null & twitterEntity.getPassword()!=null & twitterEntity.getUserName()!=null & twitterEntity.getGender()!=null) {

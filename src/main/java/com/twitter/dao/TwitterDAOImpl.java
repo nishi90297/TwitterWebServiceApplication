@@ -1,13 +1,17 @@
 package com.twitter.dao;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,9 +37,11 @@ public class TwitterDAOImpl implements TwitterDAO,UserDetailsService, PasswordEn
 	@Autowired
 	private TweetRepository tweetRepository;
 	
+	HttpServletRequest request;
+	Principal principal = request.getUserPrincipal();
+	
 	@Override
 	public String createUser(TwitterEntity twitterEntity) throws Exception {
-		
 		if(!twitterRepository.findById(twitterEntity.getEmailId()).isPresent()) {
 			twitterRepository.save(twitterEntity);
 			return "User Successfully Created !";
@@ -50,7 +56,6 @@ public class TwitterDAOImpl implements TwitterDAO,UserDetailsService, PasswordEn
 			
 			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12); 
 			String password=encoder.encode(twitterRepository.findById(username).get().getPassword());
-			currentUser=twitterRepository.findById(username).get();
 			return new User(twitterRepository.findById(username).get().getEmailId(),password,
 					new ArrayList<>());
 		} else {
@@ -61,14 +66,15 @@ public class TwitterDAOImpl implements TwitterDAO,UserDetailsService, PasswordEn
 	
 	@Override
 	public String followUser(String emailId) throws Exception{
+		System.out.println(principal);
 		
 		if(!twitterRepository.findById(emailId).isPresent()) {
 			return "No such user with emailId: " + emailId +" exists";
 		}
-//		else if(currentUser.getFollowers().contains(twitterRepository.findById(emailId).get()) ){
+//		else if(currentUser.getFollowing().contains(twitterRepository.findById(emailId).get()) ){
 //			return emailId +" already exists";
 //		}
-//		else if(currentUser.getFollowers().stream().filter(follower->
+//		else if(currentUser.getFollowing().stream().filter(follower->
 //		{
 //			follower.getEmailId().equals(twitterRepository.findById(emailId).get().getEmailId());
 //			
@@ -79,16 +85,16 @@ public class TwitterDAOImpl implements TwitterDAO,UserDetailsService, PasswordEn
 			return "can't Follow Yourself";
 		}
 		else {
-			if(currentUser.getFollowers().isEmpty()) {
-				List<TwitterEntity> followersList= new ArrayList<>();
-				followersList.add(twitterRepository.findById(emailId).get());
-				currentUser.setFollowers(followersList);
+			if(currentUser.getFollowing().isEmpty()) {
+				List<TwitterEntity> followingList= new ArrayList<>();
+				followingList.add(twitterRepository.findById(emailId).get());
+				currentUser.setFollowers(followingList);
 				twitterRepository.save(currentUser);
-				return emailId +" is set into your followers.";
+				return emailId +" is set into your followings.";
 			}
-			currentUser.getFollowers().add(twitterRepository.findById(emailId).get());
+			currentUser.getFollowing().add(twitterRepository.findById(emailId).get());
 			twitterRepository.save(currentUser);
-			return emailId +" is set into your followers.";
+			return emailId +" is set into your followings.";
 		}
 	}
 	

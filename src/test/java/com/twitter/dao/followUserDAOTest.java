@@ -24,6 +24,9 @@ public class followUserDAOTest {
 		@Mock
 	    private TwitterRepository twitterRepository;
 			
+		@Mock
+		private TwitterEntity currentUser;
+		
 		@Autowired
 		@InjectMocks
 	    private TwitterDAOImpl twitterDAO;
@@ -97,7 +100,7 @@ public class followUserDAOTest {
 			userEntity.setGender("female");
 			userEntity.setPassword("password");
 			
-			TwitterEntity currentUser=userEntity;
+			currentUser=userEntity;
 			String followerId="nishi@gmail.com";
 			
 			when(currentUser.getEmailId()).thenReturn(followerId);

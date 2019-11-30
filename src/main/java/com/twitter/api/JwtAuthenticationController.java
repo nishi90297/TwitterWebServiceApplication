@@ -19,7 +19,6 @@ import com.twitter.entity.JwtRequest;
 import com.twitter.entity.JwtResponse;;
 
 @RestController
-@CrossOrigin
 public class JwtAuthenticationController {
 
 	@Autowired
