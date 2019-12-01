@@ -9,9 +9,9 @@ public interface TwitterDAO {
 
 	public String createUser(TwitterEntity twitterEntity) throws Exception;
 //	public String loginUser(String emailId, String password) throws Exception;
-	public String followUser(String emailId) throws Exception;
+	public String followingUser(String emailId) throws Exception;
 	public List<TwitterEntity> followersList() throws Exception;
-	public int postTweet(String post) throws Exception;
+	public String postTweet(String post) throws Exception;
 	public String likeTweet(int tweetId) throws Exception;
 	public List<TweetEntity> getTweets() throws Exception;
 }

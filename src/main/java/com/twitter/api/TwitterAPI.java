@@ -38,7 +38,7 @@ public class TwitterAPI {
 	@RequestMapping(value = "following", method = RequestMethod.GET)
 	public ResponseEntity<String> followUser(@RequestParam String emailId) throws Exception {
 		try {
-			String response=twitterService.followUser(emailId);
+			String response=twitterService.followingUser(emailId);
 			return new ResponseEntity<String>(response, HttpStatus.OK);
 		} 
 		catch (Exception e) {
@@ -63,14 +63,7 @@ public class TwitterAPI {
 	@RequestMapping(value = "tweet", method = RequestMethod.POST)
 	public ResponseEntity<String> postTweet(@RequestParam String post) throws Exception {
 		try {
-			int response =twitterService.postTweet(post);
-			String result="";
-			if(response==0) {
-				result="User not login !";
-			}
-			else {
-				result="Post created with Id: "+ response + "successfully !";
-			}
+			String result =twitterService.postTweet(post);
 			return new ResponseEntity<String>(result, HttpStatus.OK);
 		} 
 		catch (Exception e) {

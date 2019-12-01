@@ -63,7 +63,7 @@ public class followUserDAOTest {
 			String followerId="sunny@gmail.com";
 			
 			when(twitterRepository.findById(followerId)).thenReturn(Optional.ofNullable(null));
-			assertEquals(twitterDAO.followUser(followerId),"No such user with emailId: " + followerId +" exists");
+			assertEquals(twitterDAO.followingUser(followerId),"No such user with emailId: " + followerId +" exists");
 		}
 		
 //		DAOimpl method not working, need to check.
@@ -89,7 +89,7 @@ public class followUserDAOTest {
 //			String followerId="sunny@gmail.com";
 //			
 //			when(twitterRepository.findById(followerId)).thenReturn(Optional.of(followingEntity));
-//			assertEquals(twitterDAO.followUser(followerId),followerId+" already exists");
+//			assertEquals(twitterDAO.followingUser(followerId),followerId+" already exists");
 //		}
 
 		@Test
@@ -104,7 +104,7 @@ public class followUserDAOTest {
 			String followerId="nishi@gmail.com";
 			
 			when(currentUser.getEmailId()).thenReturn(followerId);
-			assertEquals(twitterDAO.followUser(followerId),"can't Follow Yourself");
+			assertEquals(twitterDAO.followingUser(followerId),"can't Follow Yourself");
 		}
 
 		

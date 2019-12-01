@@ -24,9 +24,9 @@ public class followUserServiceTest {
 	    private TwitterServiceImpl twitterService;
 		
 		@Test
-		public void followUserSuccessfullTest() throws Exception {
-			when(twitterDAO.followUser("sunny@gmail.com")).thenReturn("sunny@gmail.com is set into your followers");
-			assertEquals(twitterService.followUser("sunny@gmail.com"),"sunny@gmail.com is set into your followers");
+		public void followingUserSuccessfullTest() throws Exception {
+			when(twitterDAO.followingUser("sunny@gmail.com")).thenReturn("sunny@gmail.com is set into your followers");
+			assertEquals(twitterService.followingUser("sunny@gmail.com"),"sunny@gmail.com is set into your followers");
 		}
 
 }

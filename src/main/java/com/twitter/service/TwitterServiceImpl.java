@@ -28,8 +28,8 @@ public class TwitterServiceImpl implements TwitterService{
 	}
 	
 	@Override
-	public String followUser(String emailId) throws Exception{
-		return twitterDAO.followUser(emailId);
+	public String followingUser(String emailId) throws Exception{
+		return twitterDAO.followingUser(emailId);
 	}
 	
 	@Override
@@ -38,7 +38,7 @@ public class TwitterServiceImpl implements TwitterService{
 	}
 	
 	@Override
-	public int postTweet(String post) throws Exception{
+	public String postTweet(String post) throws Exception{
 		return twitterDAO.postTweet(post);
 	}
 	

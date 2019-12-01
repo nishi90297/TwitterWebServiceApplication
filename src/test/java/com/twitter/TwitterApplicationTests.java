@@ -1,18 +1,17 @@
-package pst.twitter;
-import static org.junit.Assert.assertEquals;
+package com.twitter;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -24,120 +23,116 @@ import org.springframework.util.MultiValueMap;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
-
-import pst.twitter.controller.TwitterRestcontroller;
-import pst.twitter.model.Tweet;
-import pst.twitter.model.TwitterUser;
-import pst.twitter.service.TwitterService;
+import com.twitter.api.TwitterAPI;
+import com.twitter.entity.TweetEntity;
+import com.twitter.entity.TwitterEntity;
+import com.twitter.repository.TwitterRepository;
+import com.twitter.service.TwitterServiceImpl;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TwitterRestControllerTest {
+public class TwitterApplicationTests {
 
 		    private MockMvc mockMvc;
 
+		    @Autowired
+			@Mock
+		    private TwitterRepository twitterRepository;
+		    
 		    @Mock
-		    private TwitterService twitterService;
+		    private TwitterServiceImpl twitterService;
 
 		    @InjectMocks
-		    private TwitterRestcontroller controller = new TwitterRestcontroller();
+		    private TwitterAPI controller = new TwitterAPI();
 
 		    @Before
 		    public void init() {
-		        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
-		      
+		        mockMvc = MockMvcBuilders.standaloneSetup(controller).build(); 
 		    }
 		    
 			@SuppressWarnings("deprecation")
 			@Test
-			public void testSignUp() throws Exception {
-				TwitterUser user = new TwitterUser();
-				user.setEmailId("varshu@gmail.com");
-				user.setUserName("varshu");
+			public void testSignUpSuccessFull() throws Exception {
+
+				TwitterEntity user = new TwitterEntity();
+				user.setEmailId("nishi@gmail.com");
+				user.setUserName("Nishtha");
 				user.setGender("female");
 				user.setPassword("password");
+				
 				ObjectMapper mapper = new ObjectMapper();
 			    mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
 			    ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
 			    String requestJson=ow.writeValueAsString(user);
+			    when(twitterService.createUser(user)).thenReturn("User Successfully Created !");
+				
 			    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/signUp").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andReturn();
-			    assertEquals("successfully created", mvcResult.getResponse().getContentAsString());
+			    
+			    assertNotNull(mvcResult.getResponse().getContentAsString());
 			}
 
 			@SuppressWarnings("deprecation")
 			@Test
-			public void testLogin() throws Exception {
+			public void testFollowing() throws Exception {
 				MultiValueMap<String, String> args = new LinkedMultiValueMap<>();
-				args.add("email", "varshu@gmail.com");
-				args.add("password", "password");
-				when(twitterService.checkUserLogin("varshu@gmail.com", "password")).thenReturn(new TwitterUser());
-				String random = RandomStringUtils.randomAlphanumeric(10);
-				when(twitterService.getToken()).thenReturn(random);
-				MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/login").params(args)).andReturn();
-				assertEquals(random.length(), mvcResult.getResponse().getContentAsString().substring(11).length());
-				assertEquals(random, mvcResult.getResponse().getContentAsString().substring(11));
-			}
-
-			@SuppressWarnings("deprecation")
-			@Test
-			public void testFollow() throws Exception {
-				MultiValueMap<String, String> args = new LinkedMultiValueMap<>();
-				args.add("followingId", "varshu@gmail.com");
-				when(twitterService.updateFollow("varshu@gmail.com")).thenReturn("followed varshu@gmail.com succesfully");
-				MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/twitter/follow").params(args)).andReturn();
-				assertEquals("followed varshu@gmail.com succesfully", mvcResult.getResponse().getContentAsString());
+				args.add("followingId", "nishi@gmail.com");
+				when(twitterService.followingUser("nishi@gmail.com")).thenReturn("nishi@gmail.com is set into your followings.");
+				MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/twitter/following").params(args)).andReturn();
+				System.out.println(mvcResult.getResponse().getContentAsString());
+				assertNotNull(mvcResult.getResponse().getContentAsString());
 			}
 			
 			@SuppressWarnings("deprecation")
 			@Test
 			public void testFollowers() throws Exception {
 				
-				List<TwitterUser> followerslist = new ArrayList<>();
-				TwitterUser userA = new TwitterUser();
-				userA.setEmailId("kish@gmail.com");
-				userA.setUserName("kish");
-				userA.setGender("female");
-				followerslist.add(userA);
+				List<TwitterEntity> followerslist = new ArrayList<>();
+				TwitterEntity userEntity = new TwitterEntity();
+				userEntity.setEmailId("nishi@gmail.com");
+				userEntity.setUserName("Nishtha");
+				userEntity.setGender("female");
+				followerslist.add(userEntity);
 				
-				TwitterUser user = new TwitterUser();
-				user.setEmailId("varshu@gmail.com");
-				user.setUserName("varshu");
-				user.setGender("female");
-				user.setPassword("password");
-				user.setFollowers(followerslist );
+				TwitterEntity twitterEntity = new TwitterEntity();
+				twitterEntity.setEmailId("shiv@gmail.com");
+				twitterEntity.setUserName("Shivendra");
+				twitterEntity.setGender("male");
+				twitterEntity.setPassword("password");
+				twitterEntity.setFollowers(followerslist);
 				
-				when(twitterService.followers()).thenReturn(followerslist);
+				when(twitterService.followersList()).thenReturn(followerslist);
 				MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/twitter/followers")).andReturn();
 				assertNotNull(mvcResult.getResponse().getContentAsString());
 			}
 			
 			@SuppressWarnings("deprecation")
 			@Test
-			public void testTweet() throws Exception {
-				Tweet tweet = new Tweet();
-				tweet.setTweetedText("how r u");
-				tweet.setLikes(0);
-				tweet.setTweetId(1);
+			public void testPostTweet() throws Exception {
+				TweetEntity tweetEntity = new TweetEntity();
+				tweetEntity.setTweetedText("Welcome to twitter !");
+				tweetEntity.setLikes(0);
+				tweetEntity.setTweetId(1);
+				
 				MultiValueMap<String, String> args = new LinkedMultiValueMap<>();
-				args.add("tweetedText", "how r u");
-				when(twitterService.postTweet("how r u")).thenReturn(tweet);
+				args.add("tweetedText", "My name is Nishtha Garg !");
+				when(twitterService.postTweet("My name is Nishtha Garg !")).thenReturn("Post created with Id: "+ tweetEntity.getTweetId() + "successfully !");
 				MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/twitter/tweet").params(args)).andReturn();
 				assertNotNull(mvcResult.getResponse().getContentAsString());
 			}
 			
 			@SuppressWarnings("deprecation")
 			@Test
-			public void testlike() throws Exception {
+			public void testLikeTweet() throws Exception {
 
-				Tweet tweet = new Tweet();
-				tweet.setTweetedText("how r u");
-				tweet.setLikes(0);
-				tweet.setTweetId(1);
+				TweetEntity tweetEntity = new TweetEntity();
+				tweetEntity.setTweetedText("Welcome to twitter !");
+				tweetEntity.setLikes(0);
+				tweetEntity.setTweetId(1);
 
 				MultiValueMap<String, String> args = new LinkedMultiValueMap<>();
 				args.add("tweetId", "1");
-				tweet.setLikes(tweet.getLikes()+1);
-				when(twitterService.likeTweet(1)).thenReturn(tweet);
-				MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/twitter/like").params(args)).andReturn();
+				tweetEntity.setLikes(tweetEntity.getLikes()+1);
+				when(twitterService.likeTweet(1)).thenReturn("You have successfully liked this post as "+ 1 +"th user !");
+				MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/twitter/likeTweet").params(args)).andReturn();
 				assertNotNull(mvcResult.getResponse().getContentAsString());
 			}
 			
@@ -145,14 +140,14 @@ public class TwitterRestControllerTest {
 			@Test
 			public void testHome() throws Exception {
 
-				Tweet tweet = new Tweet();
-				tweet.setTweetedText("how r u");
-				tweet.setLikes(0);
-				tweet.setTweetId(1);
+				TweetEntity tweetEntity = new TweetEntity();
+				tweetEntity.setTweetedText("Welcome to twitter !");
+				tweetEntity.setLikes(0);
+				tweetEntity.setTweetId(1);
 				
-				List<Tweet> tweets = new ArrayList<>();
-				tweets.add(tweet);
-				when(twitterService.getTweets()).thenReturn(tweets);
+				List<TweetEntity> tweetEntityList = new ArrayList<>();
+				tweetEntityList.add(tweetEntity);
+				when(twitterService.getTweets()).thenReturn(tweetEntityList);
 				MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/twitter/home")).andReturn();
 				assertNotNull(mvcResult.getResponse().getContentAsString());
 			}
