@@ -122,7 +122,7 @@ public class TwitterDAOImpl implements TwitterDAO,UserDetailsService, PasswordEn
 			likes+=1;
 			tweetRepository.findById(tweetId).get().setLikes(likes);
 			tweetRepository.save(tweetRepository.findById(tweetId).get());
-			return "You have successfully liked this post as "+ likes +" user !";
+			return "You have successfully liked this post";
 		} 
 	} 
 	

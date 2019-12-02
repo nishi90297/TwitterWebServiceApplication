@@ -24,76 +24,68 @@ public class TwitterAPI {
 	private TwitterServiceImpl twitterService;
 	
 	@RequestMapping(value = "signUp", method = RequestMethod.POST)
-	public ResponseEntity<String> createUser(@RequestBody TwitterEntity twitterEntity) throws Exception {
+	public String createUser(@RequestBody TwitterEntity twitterEntity) throws Exception {
 		try {
-			String response=twitterService.createUser(twitterEntity);
-			return new ResponseEntity<String>(response, HttpStatus.OK);
+			return twitterService.createUser(twitterEntity);
 		} 
 		catch (Exception e) {
 			e.printStackTrace();
-			return new ResponseEntity<String>("Some error Occured ,Please try again !", HttpStatus.BAD_REQUEST);
+			return "Some error Occured ,Please try again !";
 		}
 	}
 	
 	@RequestMapping(value = "following", method = RequestMethod.GET)
-	public ResponseEntity<String> followUser(@RequestParam String emailId) throws Exception {
+	public String followingUser(@RequestParam String emailId) throws Exception {
 		try {
-			String response=twitterService.followingUser(emailId);
-			return new ResponseEntity<String>(response, HttpStatus.OK);
+			return twitterService.followingUser(emailId);
 		} 
 		catch (Exception e) {
 			e.printStackTrace();
-			return new ResponseEntity<String>("failed !", HttpStatus.BAD_REQUEST);
+			return "failed !";
 		}
 	}
 	
 	@RequestMapping(value = "followers", method = RequestMethod.GET)
-	public ResponseEntity<List<TwitterEntity>> followersList() throws Exception {
+	public List<TwitterEntity> followersList() throws Exception {
 		try {
-			List<TwitterEntity> twitterEntityList=twitterService.followersList();
-			return new ResponseEntity<List<TwitterEntity>>(twitterEntityList, HttpStatus.OK);
+			return twitterService.followersList();
 		} 
 		catch (Exception e) {
 			e.printStackTrace();
-			List<TwitterEntity> twitterEntityList= new ArrayList<>();
-			return new ResponseEntity<List<TwitterEntity>>(twitterEntityList, HttpStatus.BAD_REQUEST);
+			return new ArrayList<TwitterEntity>();
 		}
 	}
 	
 	@RequestMapping(value = "tweet", method = RequestMethod.POST)
-	public ResponseEntity<String> postTweet(@RequestParam String post) throws Exception {
+	public String postTweet(@RequestParam String post) throws Exception {
 		try {
-			String result =twitterService.postTweet(post);
-			return new ResponseEntity<String>(result, HttpStatus.OK);
+			return twitterService.postTweet(post);
 		} 
 		catch (Exception e) {
 			e.printStackTrace();
-			return new ResponseEntity<String>("failed", HttpStatus.BAD_REQUEST);
+			return "failed";
 		}
 	}
 	
 	@RequestMapping(value = "likeTweet", method = RequestMethod.POST)
-	public ResponseEntity<String> likeTweet(@RequestParam int tweetId) throws Exception {
+	public String likeTweet(@RequestParam int tweetId) throws Exception {
 		try {
-			String result=twitterService.likeTweet(tweetId); 
-			return new ResponseEntity<String>(result, HttpStatus.OK);
+			return twitterService.likeTweet(tweetId); 
 		} 
 		catch (Exception e) {
 			e.printStackTrace();
-			return new ResponseEntity<String>("failed", HttpStatus.BAD_REQUEST);
+			return "failed";
 		}
 	}
 	
 	@RequestMapping(value = "home", method = RequestMethod.GET)
-	public ResponseEntity<List<TweetEntity>> getTweets() throws Exception {
+	public List<TweetEntity> getTweets() throws Exception {
 		try {
-			 List<TweetEntity> tweetsList=twitterService.getTweets(); 
-			return new ResponseEntity<List<TweetEntity>>(tweetsList, HttpStatus.OK);
+			return twitterService.getTweets();
 		} 
 		catch (Exception e) {
 			e.printStackTrace();
-			List<TweetEntity> tweetsList=new ArrayList<>();
-			return new ResponseEntity<List<TweetEntity>>(tweetsList, HttpStatus.BAD_REQUEST);
+			return new ArrayList<TweetEntity>();
 		}
 	}
 	
